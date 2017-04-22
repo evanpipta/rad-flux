@@ -2,10 +2,11 @@
 Minimalist library for flux architecture with no production dependencies
 
 ## Contents:
-- Concepts
-- Using the module
-- Development
+- [Concepts](#concepts)
+- [Usage Guide](#usage-guide)
+- [Development](#development)
 
+----------------
 
 ## Concepts
 
@@ -23,6 +24,7 @@ An instance of Actions in `flux-minimal` represents one group of actions that ca
 
 Where you go from there is up to you.
 
+----------------
 
 ## Usage guide
 
@@ -33,7 +35,7 @@ Where you go from there is up to you.
 ### Using DataStore
 
 Creating a new DataStore:
-```
+```javascript
 // stores/my-data-store.js
 const { DataStore } = require('flux-minimal');
 
@@ -45,7 +47,7 @@ module.exports = new DataStore(initialState);
 ```
 
 Importing your store into another script and changing its state:
-```
+```javascript
 // app.js
 const myDataStore = require('./stores/my-data-store.js');
 
@@ -59,7 +61,7 @@ myDataStore.setState({
 ```
 
 Removing existing values:
-```
+```javascript
 myDataStore.setState({ hello: 'world' });
 
 console.log(myDataStore.state.hello); 	// "world"
@@ -70,7 +72,7 @@ console.log(myDataStore.state); 				// {}
 ```
 
 Changing values of nested objects:
-```
+```javascript
 myDataStore.setState({
 	nested: {
 		foo: 1,
@@ -91,20 +93,22 @@ console.log(myDataStore.state.nested); 	// { bar: 2 }
 ```
 
 Unsubscribing from changes:
-```
+```javascript
 // onStateChanged returns a reference to the callback
 const ref = myDataStore.onStateChanged(() => {
 	// do something
 });
 
 // Pass it to unsubscribe to remove the callback
-// This is useful if you need to do something only once... you can unsubscribe inside of the callback
-// If you're using react, it's also a good idea to unsubscribe any callbacks added by a component when it unmounts
+// This is useful if you need to do something only once... 
+// you can unsubscribe inside of the callback
+// If you're using react, it's also a good idea to unsubscribe any 
+// callbacks added by a component when it unmounts
 myDataStore.unsubscribe(ref);
 ```
 
 Replacing the state entirely:
-```
+```javascript
 myDataStore.setState({
 	loggedIn: true,
 	userData: {
@@ -125,7 +129,7 @@ console.log(myDataStore.state); // { loggedIn: false }
 ### Using Actions
 
 To create an Actions instance, pass in the keys of all the actions you will be using to the constructor:
-```
+```javascript
 // actions/my-actions.js
 const { Actions } = require('flux-minimal');
 
@@ -143,7 +147,7 @@ module.exports = myActions;
 
 
 Simple (instant) callback:
-```
+```javascript
 // app.js
 const myActions require('./actions/my-actions.js');
 
@@ -158,7 +162,7 @@ myActions.call('doStuff');
 
 
 Asynchronous actions:
-```
+```javascript
 // To make an asynchronous action, use .register. This will register a function to an EXISTING action.
 // The action must have been created already in the constructor.
 const myActions = new Actions({
@@ -180,7 +184,7 @@ myActions.call('doStuff');
 ```
 
 Asynchronous actions that take data:
-```
+```javascript
 // If we want to do something like call an API, 
 // and need the action to take params or other data, we can do this:
 myActions.register('callAnApi', (done, args) => {
@@ -199,7 +203,7 @@ myActions.call('callAnApi', {
 
 
 Asynchronous actions that call back with data:
-```
+```javascript
 // Send results from the async operation back to the subscribers:
 myActions.register('callAnApi', (done, args) => {
 	someApiCallThatTakesArguments(args)
@@ -220,7 +224,7 @@ myActions.call('callAnApi', {
 
 
 Unsubscribing:
-```
+```javascript
 // Unsubscribing works almost identically for Actions as it does for DataStore:
 const subscriber = myActions.on('someAction', () => {
 	// ...
@@ -243,7 +247,7 @@ myActions.unsubscribe('someAction', callback);
 
 ### Putting together the DataStore and Actions - one possible to do it:
 
-```
+```javascript
 // data-stores/my-data-store.js
 const { DataStore } = require('flux-minimal');
 const myActions = require('./actions/my-actions');
@@ -254,7 +258,7 @@ myActions.on('submitTheAwesomeForm', (response) => {
 	myDataStore.setState(response.data || response.error);
 });
 ```
-```
+```javascript
 // actions/my-actions.js
 const { Actions } = require('flux-minimal');
 
@@ -273,7 +277,7 @@ myActions.register('submitTheAwesomeForm', (done, formData) => {
 });
 
 ```
-```
+```javascript
 // app.js
 const myActions = require('./actions/my-actions');
 const myDataStore = require('./data-stores/my-data-store');
@@ -295,7 +299,9 @@ function userSubmittedAwesomeForm(formData) {
 Coming later
 
 
-### Development
+----------------
+
+## Development
 
 `git clone https://github.com/747823/flux-minimal.git` to get repo
 `npm install` to get developer dependencies
