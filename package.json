@@ -1,18 +1,30 @@
 {
   "name": "flux-minimal",
   "version": "1.0.0",
-  "description": "Minimalist library flux architecture with no dependencies",
+  "description": "Minimalist library for flux architecture with no dependencies",
   "main": "dist/index.js",
   "scripts": {
-    "build": "rollup -o dist/index.js src/index.js",
+    "build": "npm run rollup && npm run babel && npm run uglify",
+    "rollup": "rollup -o dist/index.js src/index.js",
+    "babel": "babel -o dist/index.es5.js dist/index.js",
+    "uglify": "uglifyjs -o dist/index.es5.min.js dist/index.es5.js",
     "test": "./node_modules/mocha/bin/mocha ./test"
+  },
+  "babel": {
+    "presets": [
+      "es2015"
+    ]
   },
   "author": "Evan Pipta",
   "license": "GPL-3.0",
   "devDependencies": {
     "async": "^2.3.0",
+    "babel-cli": "^6.24.1",
+    "babel-core": "^6.24.1",
+    "babel-preset-es2015": "^6.24.1",
     "chai": "^3.5.0",
     "mocha": "^3.2.0",
-    "rollup": "^0.41.6"
+    "rollup": "^0.41.6",
+    "uglify-js": "^2.8.22"
   }
 }
