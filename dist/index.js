@@ -32,19 +32,18 @@
  * 
  * @param {Object} actions - Specify the initial actions for an instance in the constructor
  *                         	 These can just be null
- 
  */
 class Actions {
 
 	constructor(actions) {
 		this.actions = actions;
-		for (const each in actions) {
+		for (const key in actions) {
 			// Make the actions non-writable so you can't replace them
 			Object.defineProperty(this.actions, key, {
 				writable: false, 
 				value: {
 					subscribers: [],
-					func
+					func: null
 				}
 			});
 		}
@@ -62,8 +61,8 @@ class Actions {
 	register(key, func) {
 		if (typeof key !== 'string') throw new TypeError('Actions.register: key argument must be a string');
 		if (typeof func !== 'function') throw new TypeError('Actions.register: func argument must be a function');
-		if (this.actions[key] === undefined) throw new Error('Actions.register: action not declared initially, please add it to the constructor');
-		if (this.actions[key] !== null) throw new Error('Actions.register: action already registered');
+		if (this.actions[key] === undefined) throw new Error('Actions.register: action not declared, please add it to the constructor');
+		if (this.actions[key].func !== null) throw new Error('Actions.register: action already registered');
 		Object.defineProperty(this.actions, key, {
 			writable: false, 
 			value: {

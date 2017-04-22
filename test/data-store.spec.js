@@ -193,7 +193,7 @@ describe('DataStore', () => {
 			let callbacksDone = 0; // record number of callbacks
 
 			const timeout = setTimeout(() => {
-				throw new Error('Shuld never get here');
+				throw new Error('Should never get here');
 			}, 500);
 
 			const fn1 = instance.onStateChanged(() => {
@@ -220,7 +220,6 @@ describe('DataStore', () => {
 			instance.setState({
 				isNewState: true
 			});
-
 		});
 
 	});
