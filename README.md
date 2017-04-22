@@ -29,7 +29,7 @@ Where you go from there is up to you.
 ## Usage guide
 
 ### Installation
-`npm install --save flux-minimal`
+`npm install --save git+https://github.com/747823/flux-minimal.git`
 
 
 ### Using DataStore
