@@ -36,7 +36,7 @@ export default class DataStore {
 	 *
 	 */
 	setState(newState, stem = this.state) {
-		if (typeof newState !== 'object' || newState === null) {
+		if (typeof newState !== 'object' || newState === null || newState.constructor !== Object) {
 			throw new TypeError('DataStore.setState: newState must be an object');
 		}
 

@@ -151,8 +151,7 @@ class Actions {
 		const action = this.actions[key];
 		if (action) {
 			for (let i = 0; i < action.subscribers.length; i++) {
-				const each = action.subscribers[i];
-				if (each.id === id) {
+				if (callback === action.subscribers[i]) {
 					action.subscribers.splice(i, 1);
 					return;
 				}
@@ -200,7 +199,7 @@ class DataStore {
 	 *
 	 */
 	setState(newState, stem = this.state) {
-		if (typeof newState !== 'object' || newState === null) {
+		if (typeof newState !== 'object' || newState === null || newState.constructor !== Object) {
 			throw new TypeError('DataStore.setState: newState must be an object');
 		}
 
