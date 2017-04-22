@@ -50,13 +50,11 @@ Importing your store into another script and changing its state:
 // app.js
 const myDataStore = require('./stores/my-data-store.js');
 
-myDataStore.onStateChanged(() => {
-  console.log(myDataStore.state.hello); // "world"
-});
-
 myDataStore.setState({
   hello: 'world'
 });
+
+console.log(myDataStore.state.hello); // world
 ```
 
 Removing existing values:
@@ -66,6 +64,7 @@ myDataStore.setState({ hello: 'world' });
 console.log(myDataStore.state.hello);   // "world"
 
 myDataStore.setState({ hello: null });
+
 console.log(myDataStore.state.hello);   // undefined
 console.log(myDataStore.state);         // {}
 ```
@@ -78,31 +77,41 @@ myDataStore.setState({
     bar: 2
   }
 });
+
 console.log(myDataStore.state.nested);  // { foo: 1, bar: 2 }
 
 myDataStore.setState({
   nested: { foo: 10 }
 });
+
 console.log(myDataStore.state.nested);  // { foo: 10, bar: 2 }
 
 myDataStore.setState({
   nested: { foo: null }
 });
+
 console.log(myDataStore.state.nested);  // { bar: 2 }
+```
+
+Subscribing to state changes
+```javascript
+myDataStore.onStateChanged(() => {
+  console.log(myDataStore.state); // { something: 'else' }
+});
+
+myDataStore.setState({
+  something: 'else'
+});
 ```
 
 Unsubscribing from changes:
 ```javascript
 // onStateChanged returns a reference to the callback
 const ref = myDataStore.onStateChanged(() => {
-  // do something
+  // ...
 });
 
 // Pass it to unsubscribe to remove the callback
-// This is useful if you need to do something only once... 
-// you can unsubscribe inside of the callback
-// If you're using react, it's also a good idea to unsubscribe any 
-// callbacks added by a component when it unmounts
 myDataStore.unsubscribe(ref);
 ```
 
@@ -116,7 +125,8 @@ myDataStore.setState({
   }
 });
 
-// FYI replaceState will call subscribers listening to onStateChanged, just like setState
+console.log(myDataStore.state); // that whole object up there ^
+
 myDataStore.replaceState({
   loggedIn: false
 });
@@ -127,22 +137,21 @@ console.log(myDataStore.state); // { loggedIn: false }
 
 ### Using Actions
 
-To create an Actions instance, pass in the keys of all the actions you will be using to the constructor:
+To create an Actions instance, call the constructor, and pass in an object containing your action names as keys:
 ```javascript
 // actions/my-actions.js
 const { Actions } = require('flux-minimal');
 
-// Set the keys to null.
+// Add your action names as keys (the value doesn't matter)
 const myActions = new Actions({
-  'doStuff': null
+  'doStuff': null,
+  'doMoreStuff': null
 });
 
-// Again export a single instance so other scripts all reference the same instance
+// Again, export a single instance so other scripts all reference the same instance
 module.exports = myActions;
-
-// The reason we pass in an object here instead of an array is to avoid generating
-// a bunch of "hidden classes" when iterating over the actions to create the internal object
 ```
+(Note: the reason we pass in an object here instead of an array is to avoid generating a bunch of "hidden classes" when iterating over the actions to create the internal object)
 
 
 Simple (instant) callback:
