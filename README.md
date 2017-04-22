@@ -52,7 +52,7 @@ Importing your store into another script and changing its state:
 const myDataStore = require('./stores/my-data-store.js');
 
 myDataStore.onStateChanged(() => {
-	console.log(myDataStore.state.hello); // "world"
+  console.log(myDataStore.state.hello); // "world"
 });
 
 myDataStore.setState({
@@ -64,39 +64,39 @@ Removing existing values:
 ```javascript
 myDataStore.setState({ hello: 'world' });
 
-console.log(myDataStore.state.hello); 	// "world"
+console.log(myDataStore.state.hello);   // "world"
 
 myDataStore.setState({ hello: null });
-console.log(myDataStore.state.hello); 	// undefined
-console.log(myDataStore.state); 				// {}
+console.log(myDataStore.state.hello);   // undefined
+console.log(myDataStore.state);         // {}
 ```
 
 Changing values of nested objects:
 ```javascript
 myDataStore.setState({
-	nested: {
-		foo: 1,
-		bar: 2
-	}
+  nested: {
+    foo: 1,
+    bar: 2
+  }
 });
-console.log(myDataStore.state.nested); 	// { foo: 1, bar: 2 }
+console.log(myDataStore.state.nested);  // { foo: 1, bar: 2 }
 
 myDataStore.setState({
-	nested: { foo: 10 }
+  nested: { foo: 10 }
 });
-console.log(myDataStore.state.nested); 	// { foo: 10, bar: 2 }
+console.log(myDataStore.state.nested);  // { foo: 10, bar: 2 }
 
 myDataStore.setState({
-	nested: { foo: null }
+  nested: { foo: null }
 });
-console.log(myDataStore.state.nested); 	// { bar: 2 }
+console.log(myDataStore.state.nested);  // { bar: 2 }
 ```
 
 Unsubscribing from changes:
 ```javascript
 // onStateChanged returns a reference to the callback
 const ref = myDataStore.onStateChanged(() => {
-	// do something
+  // do something
 });
 
 // Pass it to unsubscribe to remove the callback
@@ -110,16 +110,16 @@ myDataStore.unsubscribe(ref);
 Replacing the state entirely:
 ```javascript
 myDataStore.setState({
-	loggedIn: true,
-	userData: {
-		name: 'you',
-		superSecretInfo: 'you don\'t want to know'
-	}
+  loggedIn: true,
+  userData: {
+    name: 'you',
+    superSecretInfo: 'you don\'t want to know'
+  }
 });
 
 // FYI replaceState will call subscribers listening to onStateChanged, just like setState
 myDataStore.replaceState({
-	loggedIn: false
+  loggedIn: false
 });
 
 console.log(myDataStore.state); // { loggedIn: false }
@@ -135,7 +135,7 @@ const { Actions } = require('flux-minimal');
 
 // Set the keys to null.
 const myActions = new Actions({
-	'doStuff': null
+  'doStuff': null
 });
 
 // Again export a single instance so other scripts all reference the same instance
@@ -153,7 +153,7 @@ const myActions require('./actions/my-actions.js');
 
 // Do something when an action happened
 myActions.on('doStuff', () => {
-	console.log('yo');
+  console.log('yo');
 });
 
 // Make the action happen
@@ -166,18 +166,18 @@ Asynchronous actions:
 // To make an asynchronous action, use .register. This will register a function to an EXISTING action.
 // The action must have been created already in the constructor.
 const myActions = new Actions({
-	'doStuff': null
+  'doStuff': null
 });
  
 myActions.register('doStuff', (done) => {
-	doSomeAsyncStuff()
-		.then(() => {
-			done();				// call done when all async actions complete and you are ready to "publish" the action to subscribers
-		});
+  doSomeAsyncStuff()
+    .then(() => {
+      done();       // call done when all async actions complete and you are ready to "publish" the action to subscribers
+    });
 });
 
 myActions.on('doStuff', () => {
-	// Won't reach this point until doSomeAsyncStuff() is complete.
+  // Won't reach this point until doSomeAsyncStuff() is complete.
 });
 
 myActions.call('doStuff');
@@ -188,16 +188,16 @@ Asynchronous actions that take data:
 // If we want to do something like call an API, 
 // and need the action to take params or other data, we can do this:
 myActions.register('callAnApi', (done, args) => {
-	console.log(args); // { foo: 'bar' }
-	someApiCallThatTakesArguments(args)
-		.then(() => {
-			done();
-		});
+  console.log(args); // { foo: 'bar' }
+  someApiCallThatTakesArguments(args)
+    .then(() => {
+      done();
+    });
 });
 
 // The second argument will be passed into the registered function for this action
 myActions.call('callAnApi', {
-	foo: 'bar'
+  foo: 'bar'
 });
 ```
 
@@ -206,19 +206,19 @@ Asynchronous actions that call back with data:
 ```javascript
 // Send results from the async operation back to the subscribers:
 myActions.register('callAnApi', (done, args) => {
-	someApiCallThatTakesArguments(args)
-		.then((response) => {
-			done(response);
-		});
+  someApiCallThatTakesArguments(args)
+    .then((response) => {
+      done(response);
+    });
 });
 
 // Now we can subscribe to 'callAnApi' action from anywhere and see the results
 myActions.on('callAnApi', (response) => {
-	console.log(response); // whatever the aPI responded with
+  console.log(response); // whatever the aPI responded with
 });
 
 myActions.call('callAnApi', {
-	foo: 'bar'
+  foo: 'bar'
 });
 ```
 
@@ -227,7 +227,7 @@ Unsubscribing:
 ```javascript
 // Unsubscribing works almost identically for Actions as it does for DataStore:
 const subscriber = myActions.on('someAction', () => {
-	// ...
+  // ...
 });
 
 myActions.unsubscribe('someAction', subscriber);
@@ -235,7 +235,7 @@ myActions.unsubscribe('someAction', subscriber);
 // ------- Alternatively ----------
 
 function callback() {
-	// ...
+  // ...
 }
 
 myActions.on('someAction', callback);
@@ -255,7 +255,7 @@ const myActions = require('./actions/my-actions');
 const myDataStore = module.exports = new DataStore({});
 
 myActions.on('submitTheAwesomeForm', (response) => {
-	myDataStore.setState(response.data || response.error);
+  myDataStore.setState(response.data || response.error);
 });
 ```
 ```javascript
@@ -263,17 +263,17 @@ myActions.on('submitTheAwesomeForm', (response) => {
 const { Actions } = require('flux-minimal');
 
 const myActions = module.exports = new Actions({
-	'submitTheAwesomeForm':
+  'submitTheAwesomeForm':
 });
 
 myActions.register('submitTheAwesomeForm', (done, formData) => {
-	callTheApi(formData)
-		.then((response) => {
-			done(response);
-		})
-		.catch((error) => {
-			done({ error });
-		});
+  callTheApi(formData)
+    .then((response) => {
+      done(response);
+    })
+    .catch((error) => {
+      done({ error });
+    });
 });
 
 ```
@@ -285,11 +285,11 @@ const myDataStore = require('./data-stores/my-data-store');
 console.log(myDataStore.state); // Does not contain anything
 
 myDataStore.onStateChanged(() => {
-	console.log(myDataStore.state);	// Now it contains the data that resulted from the user's action
+  console.log(myDataStore.state); // Now it contains the data that resulted from the user's action
 });
 
 function userSubmittedAwesomeForm(formData) {
-	myActions.call('submitTheAwesomeForm', formData);
+  myActions.call('submitTheAwesomeForm', formData);
 }
 
 ```
