@@ -39,171 +39,171 @@ function _classCallCheck(instance, Constructor) { if (!(instance instanceof Cons
  *
  * 
  * @param {Object} actions - Specify the initial actions for an instance in the constructor
- *                         	 These can just be null
+ *                           These can just be null
  */
 var Actions = function () {
-	function Actions(actions) {
-		_classCallCheck(this, Actions);
+  function Actions(actions) {
+    _classCallCheck(this, Actions);
 
-		this.actions = actions;
-		for (var key in actions) {
-			// Make the actions non-writable so you can't replace them
-			Object.defineProperty(this.actions, key, {
-				writable: false,
-				value: {
-					subscribers: [],
-					func: null
-				}
-			});
-		}
-	}
+    this.actions = actions;
+    for (var key in actions) {
+      // Make the actions non-writable so you can't replace them
+      Object.defineProperty(this.actions, key, {
+        writable: false,
+        value: {
+          subscribers: [],
+          func: null
+        }
+      });
+    }
+  }
 
-	/**
-  * Register a function to an action
-  * 
-  * This is needed if you want your action to be async (e.g. api calls) 
-  * Or you don't believe in separating all effects from actions and want to wrap them up in one place
-  * 
-  * @param {String} key 		- the action's name
-  * @param {Function} func - the action's internal function, what it actually does.
-  */
-
-
-	_createClass(Actions, [{
-		key: 'register',
-		value: function register(key, func) {
-			if (typeof key !== 'string') throw new TypeError('Actions.register: key argument must be a string');
-			if (typeof func !== 'function') throw new TypeError('Actions.register: func argument must be a function');
-			if (this.actions[key] === undefined) throw new Error('Actions.register: action not declared, please add it to the constructor');
-			if (this.actions[key].func !== null) throw new Error('Actions.register: action already registered');
-			Object.defineProperty(this.actions, key, {
-				writable: false,
-				value: {
-					subscribers: [],
-					func: func
-				}
-			});
-		}
-
-		/**
-   * Call a user action, pass args and a done function to it
-   */
-
-	}, {
-		key: 'call',
-		value: function call(key, args) {
-			var action = this.actions[key];
-			if (action) {
-				if (typeof action.func === 'function') {
-					// Function registered for this action, allow it to do the work
-					var done = this.buildDoneFunction(key);
-					action.func(done, args);
-				} else {
-					// No function registered, so just publish immediately with no data
-					this.publish(key);
-				}
-			}
-		}
-
-		/**
-   * Factory to generate a "done" function to publish the complete event for a specific action
-   * This is passed into each action's function as the "callback" for when the action is done
-   */
-
-	}, {
-		key: 'buildDoneFunction',
-		value: function buildDoneFunction(key) {
-			var actions = this;
-			return function (data) {
-				actions.publish(key, data);
-			};
-		}
-
-		/**
-   * Call all subscriber callbacks of an action and pass the data to them
-   */
-
-	}, {
-		key: 'publish',
-		value: function publish(key, data) {
-			var action = this.actions[key];
-			if (action) {
-				var _iteratorNormalCompletion = true;
-				var _didIteratorError = false;
-				var _iteratorError = undefined;
-
-				try {
-					for (var _iterator = action.subscribers[Symbol.iterator](), _step; !(_iteratorNormalCompletion = (_step = _iterator.next()).done); _iteratorNormalCompletion = true) {
-						var each = _step.value;
-
-						each(data);
-					}
-				} catch (err) {
-					_didIteratorError = true;
-					_iteratorError = err;
-				} finally {
-					try {
-						if (!_iteratorNormalCompletion && _iterator.return) {
-							_iterator.return();
-						}
-					} finally {
-						if (_didIteratorError) {
-							throw _iteratorError;
-						}
-					}
-				}
-			}
-		}
-
-		/**
-   * Subscribe to an action with a callback
+  /**
+   * Register a function to an action
    * 
-   * This currently does NOT check for duplicates, and there's no way to unsubscribe
-   * So be careful about memory usage from subscribing to actions for now
+   * This is needed if you want your action to be async (e.g. api calls) 
+   * Or you don't believe in separating all effects from actions and want to wrap them up in one place
    * 
-   * In the future we can add an unsubscribe method
-   * 
-   * @param {String} key 					- the action's name
-   * @param {Function} callback 	- callback to do something when the action is completed
-   *
-   * @return {Function|undefined} - a reference to the callback function. can be used to unsubscribe
+   * @param {String} key    - the action's name
+   * @param {Function} func - the action's internal function, what it actually does.
    */
 
-	}, {
-		key: 'on',
-		value: function on(key, callback) {
-			if (typeof key !== 'string') throw new TypeError('Actions.on: key argument must be a string');
-			if (typeof callback !== 'function') throw new TypeError('Actions.on: callback argument must be a function');
-			if (!this.actions[key].subscribers.includes(callback)) {
-				this.actions[key].subscribers.push(callback);
-				return callback;
-			}
-		}
 
-		/**
-   * Remove a callback from an action
-   * 
-   * @param {String} key 			 - the action name
-   * @param {String} callback  - a reference to a particular callback function subscribed to the action
-   *                           	 Actions.on() returns a reference to it
-   */
+  _createClass(Actions, [{
+    key: 'register',
+    value: function register(key, func) {
+      if (typeof key !== 'string') throw new TypeError('Actions.register: key argument must be a string');
+      if (typeof func !== 'function') throw new TypeError('Actions.register: func argument must be a function');
+      if (this.actions[key] === undefined) throw new Error('Actions.register: action not declared, please add it to the constructor');
+      if (this.actions[key].func !== null) throw new Error('Actions.register: action already registered');
+      Object.defineProperty(this.actions, key, {
+        writable: false,
+        value: {
+          subscribers: [],
+          func: func
+        }
+      });
+    }
 
-	}, {
-		key: 'unsubscribe',
-		value: function unsubscribe(key, callback) {
-			var action = this.actions[key];
-			if (action) {
-				for (var i = 0; i < action.subscribers.length; i++) {
-					if (callback === action.subscribers[i]) {
-						action.subscribers.splice(i, 1);
-						return;
-					}
-				}
-			}
-		}
-	}]);
+    /**
+     * Call a user action, pass args and a done function to it
+     */
 
-	return Actions;
+  }, {
+    key: 'call',
+    value: function call(key, args) {
+      var action = this.actions[key];
+      if (action) {
+        if (typeof action.func === 'function') {
+          // Function registered for this action, allow it to do the work
+          var done = this.buildDoneFunction(key);
+          action.func(done, args);
+        } else {
+          // No function registered, so just publish immediately with no data
+          this.publish(key);
+        }
+      }
+    }
+
+    /**
+     * Factory to generate a "done" function to publish the complete event for a specific action
+     * This is passed into each action's function as the "callback" for when the action is done
+     */
+
+  }, {
+    key: 'buildDoneFunction',
+    value: function buildDoneFunction(key) {
+      var actions = this;
+      return function (data) {
+        actions.publish(key, data);
+      };
+    }
+
+    /**
+     * Call all subscriber callbacks of an action and pass the data to them
+     */
+
+  }, {
+    key: 'publish',
+    value: function publish(key, data) {
+      var action = this.actions[key];
+      if (action) {
+        var _iteratorNormalCompletion = true;
+        var _didIteratorError = false;
+        var _iteratorError = undefined;
+
+        try {
+          for (var _iterator = action.subscribers[Symbol.iterator](), _step; !(_iteratorNormalCompletion = (_step = _iterator.next()).done); _iteratorNormalCompletion = true) {
+            var each = _step.value;
+
+            each(data);
+          }
+        } catch (err) {
+          _didIteratorError = true;
+          _iteratorError = err;
+        } finally {
+          try {
+            if (!_iteratorNormalCompletion && _iterator.return) {
+              _iterator.return();
+            }
+          } finally {
+            if (_didIteratorError) {
+              throw _iteratorError;
+            }
+          }
+        }
+      }
+    }
+
+    /**
+     * Subscribe to an action with a callback
+     * 
+     * This currently does NOT check for duplicates, and there's no way to unsubscribe
+     * So be careful about memory usage from subscribing to actions for now
+     * 
+     * In the future we can add an unsubscribe method
+     * 
+     * @param {String} key          - the action's name
+     * @param {Function} callback   - callback to do something when the action is completed
+     *
+     * @return {Function|undefined} - a reference to the callback function. can be used to unsubscribe
+     */
+
+  }, {
+    key: 'on',
+    value: function on(key, callback) {
+      if (typeof key !== 'string') throw new TypeError('Actions.on: key argument must be a string');
+      if (typeof callback !== 'function') throw new TypeError('Actions.on: callback argument must be a function');
+      if (!this.actions[key].subscribers.includes(callback)) {
+        this.actions[key].subscribers.push(callback);
+        return callback;
+      }
+    }
+
+    /**
+     * Remove a callback from an action
+     * 
+     * @param {String} key       - the action name
+     * @param {String} callback  - a reference to a particular callback function subscribed to the action
+     *                             Actions.on() returns a reference to it
+     */
+
+  }, {
+    key: 'unsubscribe',
+    value: function unsubscribe(key, callback) {
+      var action = this.actions[key];
+      if (action) {
+        for (var i = 0; i < action.subscribers.length; i++) {
+          if (callback === action.subscribers[i]) {
+            action.subscribers.splice(i, 1);
+            return;
+          }
+        }
+      }
+    }
+  }]);
+
+  return Actions;
 }();
 
 /**
@@ -230,131 +230,131 @@ var Actions = function () {
 
 
 var DataStore = function () {
-	function DataStore(initState) {
-		_classCallCheck(this, DataStore);
+  function DataStore(initState) {
+    _classCallCheck(this, DataStore);
 
-		this.state = initState || {};
-		this.subscribers = [];
-	}
+    this.state = initState || {};
+    this.subscribers = [];
+  }
 
-	/**
-  * Non-destructive set state (Same as react components)
-  * Set a key to null or undefined to delete it
-  * 
-  * Obj is the new object, "stem" is the one we're changing
-  * I pass "stem" in rather than referring to this.state directly in order to make this recursive
-  *
-  */
+  /**
+   * Non-destructive set state (Same as react components)
+   * Set a key to null or undefined to delete it
+   * 
+   * Obj is the new object, "stem" is the one we're changing
+   * I pass "stem" in rather than referring to this.state directly in order to make this recursive
+   *
+   */
 
 
-	_createClass(DataStore, [{
-		key: 'setState',
-		value: function setState(newState) {
-			var stem = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : this.state;
+  _createClass(DataStore, [{
+    key: 'setState',
+    value: function setState(newState) {
+      var stem = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : this.state;
 
-			if ((typeof newState === 'undefined' ? 'undefined' : _typeof(newState)) !== 'object' || newState === null || newState.constructor !== Object) {
-				throw new TypeError('DataStore.setState: newState must be an object');
-			}
+      if ((typeof newState === 'undefined' ? 'undefined' : _typeof(newState)) !== 'object' || newState === null || newState.constructor !== Object) {
+        throw new TypeError('DataStore.setState: newState must be an object');
+      }
 
-			for (var key in newState) {
-				if (newState[key] === null || newState[key] === undefined) {
-					delete stem[key];
-				} else if (_typeof(newState[key]) === 'object' && _typeof(stem[key]) === 'object') {
-					this.setState(newState[key], stem[key]);
-				} else {
-					stem[key] = newState[key];
-				}
-			}
+      for (var key in newState) {
+        if (newState[key] === null || newState[key] === undefined) {
+          delete stem[key];
+        } else if (_typeof(newState[key]) === 'object' && _typeof(stem[key]) === 'object') {
+          this.setState(newState[key], stem[key]);
+        } else {
+          stem[key] = newState[key];
+        }
+      }
 
-			// Only do callback on "outer" recursie layer
-			if (stem === this.state) {
-				var _iteratorNormalCompletion2 = true;
-				var _didIteratorError2 = false;
-				var _iteratorError2 = undefined;
+      // Only do callback on "outer" recursie layer
+      if (stem === this.state) {
+        var _iteratorNormalCompletion2 = true;
+        var _didIteratorError2 = false;
+        var _iteratorError2 = undefined;
 
-				try {
-					for (var _iterator2 = this.subscribers[Symbol.iterator](), _step2; !(_iteratorNormalCompletion2 = (_step2 = _iterator2.next()).done); _iteratorNormalCompletion2 = true) {
-						var each = _step2.value;
+        try {
+          for (var _iterator2 = this.subscribers[Symbol.iterator](), _step2; !(_iteratorNormalCompletion2 = (_step2 = _iterator2.next()).done); _iteratorNormalCompletion2 = true) {
+            var each = _step2.value;
 
-						each(this.state);
-					}
-				} catch (err) {
-					_didIteratorError2 = true;
-					_iteratorError2 = err;
-				} finally {
-					try {
-						if (!_iteratorNormalCompletion2 && _iterator2.return) {
-							_iterator2.return();
-						}
-					} finally {
-						if (_didIteratorError2) {
-							throw _iteratorError2;
-						}
-					}
-				}
-			}
-		}
+            each(this.state);
+          }
+        } catch (err) {
+          _didIteratorError2 = true;
+          _iteratorError2 = err;
+        } finally {
+          try {
+            if (!_iteratorNormalCompletion2 && _iterator2.return) {
+              _iterator2.return();
+            }
+          } finally {
+            if (_didIteratorError2) {
+              throw _iteratorError2;
+            }
+          }
+        }
+      }
+    }
 
-		// Essentially the same as just setting .state directly, but it calls the subscribers
-		// Data must be an object
+    // Essentially the same as just setting .state directly, but it calls the subscribers
+    // Data must be an object
 
-	}, {
-		key: 'replaceState',
-		value: function replaceState(newState) {
-			if ((typeof newState === 'undefined' ? 'undefined' : _typeof(newState)) !== 'object' || newState === null) return;
-			this.state = newState;
-			var _iteratorNormalCompletion3 = true;
-			var _didIteratorError3 = false;
-			var _iteratorError3 = undefined;
+  }, {
+    key: 'replaceState',
+    value: function replaceState(newState) {
+      if ((typeof newState === 'undefined' ? 'undefined' : _typeof(newState)) !== 'object' || newState === null) return;
+      this.state = newState;
+      var _iteratorNormalCompletion3 = true;
+      var _didIteratorError3 = false;
+      var _iteratorError3 = undefined;
 
-			try {
-				for (var _iterator3 = this.subscribers[Symbol.iterator](), _step3; !(_iteratorNormalCompletion3 = (_step3 = _iterator3.next()).done); _iteratorNormalCompletion3 = true) {
-					var each = _step3.value;
+      try {
+        for (var _iterator3 = this.subscribers[Symbol.iterator](), _step3; !(_iteratorNormalCompletion3 = (_step3 = _iterator3.next()).done); _iteratorNormalCompletion3 = true) {
+          var each = _step3.value;
 
-					each(this.state);
-				}
-			} catch (err) {
-				_didIteratorError3 = true;
-				_iteratorError3 = err;
-			} finally {
-				try {
-					if (!_iteratorNormalCompletion3 && _iterator3.return) {
-						_iterator3.return();
-					}
-				} finally {
-					if (_didIteratorError3) {
-						throw _iteratorError3;
-					}
-				}
-			}
-		}
+          each(this.state);
+        }
+      } catch (err) {
+        _didIteratorError3 = true;
+        _iteratorError3 = err;
+      } finally {
+        try {
+          if (!_iteratorNormalCompletion3 && _iterator3.return) {
+            _iterator3.return();
+          }
+        } finally {
+          if (_didIteratorError3) {
+            throw _iteratorError3;
+          }
+        }
+      }
+    }
 
-		// Subscribe to state changes
+    // Subscribe to state changes
 
-	}, {
-		key: 'onStateChanged',
-		value: function onStateChanged(callback) {
-			if (typeof callback === 'function' && !this.subscribers.includes(callback)) {
-				this.subscribers.push(callback);
-				return callback;
-			}
-		}
+  }, {
+    key: 'onStateChanged',
+    value: function onStateChanged(callback) {
+      if (typeof callback === 'function' && !this.subscribers.includes(callback)) {
+        this.subscribers.push(callback);
+        return callback;
+      }
+    }
 
-		// Unsubscribe by passing in the same function
+    // Unsubscribe by passing in the same function
 
-	}, {
-		key: 'unsubscribe',
-		value: function unsubscribe(callback) {
-			for (var i = 0; i < this.subscribers.length; i++) {
-				if (callback === this.subscribers[i]) {
-					this.subscribers.splice(i, 1);
-					return;
-				}
-			}
-		}
-	}]);
+  }, {
+    key: 'unsubscribe',
+    value: function unsubscribe(callback) {
+      for (var i = 0; i < this.subscribers.length; i++) {
+        if (callback === this.subscribers[i]) {
+          this.subscribers.splice(i, 1);
+          return;
+        }
+      }
+    }
+  }]);
 
-	return DataStore;
+  return DataStore;
 }();
 
 module.exports = { Actions: Actions, DataStore: DataStore };

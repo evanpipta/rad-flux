@@ -172,7 +172,7 @@ const myActions = new Actions({
 myActions.register('doStuff', (done) => {
   doSomeAsyncStuff()
     .then(() => {
-      done();       // call done when all async actions complete and you are ready to "publish" the action to subscribers
+      done();       // call done when all async operations complete to "publish" the action to subscribers
     });
 });
 
