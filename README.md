@@ -14,7 +14,7 @@ Minimalist library for flux architecture with no production dependencies
 
 The only pieces of `flux-minimal` are two constructors: `DataStore` and `Actions`.
 
-A DataStore represents a piece of application state. `flux-minimal` doesn't dictate how these pieces are split up - a `flux-minimal` DataStore can be used to store the entire state of an application, or of a single component. The important thing is that a `flux-minimal` DataStore has a non-destructive `setState()` method that publishes change events to subscribers.
+A DataStore represents a piece of application state. `flux-minimal` doesn't dictate how these pieces are split up; a `flux-minimal` DataStore can be used to store the entire state of an application, or of a single component. The important thing is that a `flux-minimal` DataStore has a non-destructive `setState()` method that publishes change events to subscribers.
 
 An instance of Actions in `flux-minimal` represents one group of actions that can be done within an application. Actions are source agnostic, i.e. can be used for actions initiated by the user, or by the program. `flux-minimal` provides an interface to call actions and subscribe to action calls from anywhere. It supports synchronous and asynchronous actions, and does not dictate whether or not actions should have built-in side effects.
 
@@ -245,7 +245,7 @@ myActions.unsubscribe('someAction', callback);
 ```
 
 
-### Putting together the DataStore and Actions - one possible to do it:
+### Putting together the DataStore and Actions (one possible way to do it):
 
 ```javascript
 // data-stores/my-data-store.js
