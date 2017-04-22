@@ -1,0 +1,17 @@
+{
+  "name": "flux-minimal",
+  "version": "1.0.0",
+  "description": "Minimalist library flux architecture with no dependencies",
+  "main": "dist/index.js",
+  "scripts": {
+    "build": "rollup -o dist/index.js src/index.js",
+    "test": "./node_modules/mocha/bin/mocha ./test"
+  },
+  "author": "Evan Pipta",
+  "license": "GPL-3.0",
+  "devDependencies": {
+    "chai": "^3.5.0",
+    "mocha": "^3.2.0",
+    "rollup": "^0.41.6"
+  }
+}
