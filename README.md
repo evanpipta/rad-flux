@@ -174,6 +174,12 @@ myActions.on('doStuff', () => {
 
 myActions.call('doStuff');
 ```
+Note: you can only call .register() once per action, it permanently sets the registered function for that action.
+
+The idea here is to make sure actions themselves only do one thing, from one place.
+
+If you want your actions to indirectly cause other "effects", subscribe to them externally and do stuff after they complete.
+
 
 **Actions that take data and do stuff with it:**
 ```javascript
