@@ -33,7 +33,7 @@ Where you go from there is up to you.
 
 ### Using DataStore
 
-*Creating a new DataStore:*
+**Creating a new DataStore:**
 ```javascript
 const { DataStore } = require('flux-minimal');
 
@@ -44,7 +44,7 @@ const myDataStore = new DataStore(initialState);
 // I recommend exporting your DataStore instances to share across the app
 ```
 
-*Changing the DataStore's state:*
+**Changing the DataStore's state:**
 ```javascript
 console.log(myDataStore.state); // {}
 
@@ -55,7 +55,7 @@ myDataStore.setState({
 console.log(myDataStore.state); // { hello: 'world' }
 ```
 
-*Removing existing values:*
+**Removing existing values:**
 ```javascript
 console.log(myDataStore.state); // { hello: 'world' }
 
@@ -64,7 +64,7 @@ myDataStore.setState({ hello: null });
 console.log(myDataStore.state); // {}
 ```
 
-*Changing/removing existing values within nested objects:*
+**Changing/removing existing values within nested objects:**
 ```javascript
 myDataStore.setState({
   nested: {
@@ -88,7 +88,7 @@ myDataStore.setState({
 console.log(myDataStore.state.nested);  // { bar: 2 }
 ```
 
-*Subscribing to state changes*
+**Subscribing to state changes**
 ```javascript
 myDataStore.onStateChanged(() => {
   console.log(myDataStore.state); // { something: 'else' }
@@ -99,7 +99,7 @@ myDataStore.setState({
 });
 ```
 
-*Unsubscribing from state changes:*
+**Unsubscribing from state changes:**
 ```javascript
 // onStateChanged returns a reference to the callback
 const ref = myDataStore.onStateChanged(() => {
@@ -110,7 +110,7 @@ const ref = myDataStore.onStateChanged(() => {
 myDataStore.unsubscribe(ref);
 ```
 
-*Replacing the state entirely:*
+**Replacing the state entirely:**
 ```javascript
 myDataStore.setState({
   loggedIn: true,
@@ -132,7 +132,7 @@ console.log(myDataStore.state); // { loggedIn: false }
 
 ### Using Actions
 
-*Creating a new set of actions:*
+**Creating a new set of actions:**
 ```javascript
 const { Actions } = require('flux-minimal');
 
@@ -147,7 +147,7 @@ const myActions = new Actions({
 (Note: the reason we pass in an object here instead of an array is to avoid generating a bunch of "hidden classes" when iterating over the actions to create the internal action objects)
 
 
-*Subscribing to an action:*
+**Subscribing to an action:**
 ```javascript
 myActions.on('doStuff', () => {
   console.log('yo');
@@ -157,7 +157,7 @@ myActions.on('doStuff', () => {
 myActions.call('doStuff');
 ```
 
-*Doing stuff inside of an action:*
+**Doing stuff inside of an action:**
 ```javascript
 // To do stuff inside of an action use .register()
 myActions.register('doStuff', (done) => {
@@ -175,7 +175,7 @@ myActions.on('doStuff', () => {
 myActions.call('doStuff');
 ```
 
-*Actions that take data and do stuff with it:*
+**Actions that take data and do stuff with it:**
 ```javascript
 // If we want to do something like call an API, and we need to take arguments, we can do this:
 myActions.register('callAnApi', (done, args) => {
@@ -190,7 +190,7 @@ myActions.call('callAnApi', { foo: 'bar' });
 ```
 
 
-*Actions that do stuff and then pass data to their subscribers:*
+**Actions that do stuff and then pass data to their subscribers:**
 ```javascript
 myActions.register('callAnApi', (done, args) => {
   someApiCallThatTakesArguments(args)
@@ -209,7 +209,7 @@ myActions.call('callAnApi', {
 ```
 
 
-*Unsubscribing:*
+**Unsubscribing:**
 ```javascript
 // myActions.on returns a ref to the subscriber function, just like DataStore:
 const ref = myActions.on('someAction', () => {
