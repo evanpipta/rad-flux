@@ -33,43 +33,38 @@ Where you go from there is up to you.
 
 ### Using DataStore
 
-Creating a new DataStore:
+*Creating a new DataStore:*
 ```javascript
-// stores/my-data-store.js
 const { DataStore } = require('flux-minimal');
 
 const initialState = {};
 
-// The recommended usage is to export a single instance of the store
-// This way, any scripts importing/requiring your store will share the same isntance
-module.exports = new DataStore(initialState);
+const myDataStore = new DataStore(initialState);
+
+// I recommend exporting your DataStore instances to share across the app
 ```
 
-Importing your store into another script and changing its state:
+*Changing the DataStore's state:*
 ```javascript
-// app.js
-const myDataStore = require('./stores/my-data-store.js');
+console.log(myDataStore.state); // {}
 
 myDataStore.setState({
   hello: 'world'
 });
 
-console.log(myDataStore.state.hello); // world
+console.log(myDataStore.state); // { hello: 'world' }
 ```
 
-Removing existing values:
+*Removing existing values:*
 ```javascript
-myDataStore.setState({ hello: 'world' });
-
-console.log(myDataStore.state.hello);   // "world"
+console.log(myDataStore.state); // { hello: 'world' }
 
 myDataStore.setState({ hello: null });
 
-console.log(myDataStore.state.hello);   // undefined
-console.log(myDataStore.state);         // {}
+console.log(myDataStore.state); // {}
 ```
 
-Changing values of nested objects:
+*Changing/removing existing values within nested objects:*
 ```javascript
 myDataStore.setState({
   nested: {
@@ -93,7 +88,7 @@ myDataStore.setState({
 console.log(myDataStore.state.nested);  // { bar: 2 }
 ```
 
-Subscribing to state changes
+*Subscribing to state changes*
 ```javascript
 myDataStore.onStateChanged(() => {
   console.log(myDataStore.state); // { something: 'else' }
@@ -104,7 +99,7 @@ myDataStore.setState({
 });
 ```
 
-Unsubscribing from changes:
+*Unsubscribing from state changes:*
 ```javascript
 // onStateChanged returns a reference to the callback
 const ref = myDataStore.onStateChanged(() => {
@@ -115,7 +110,7 @@ const ref = myDataStore.onStateChanged(() => {
 myDataStore.unsubscribe(ref);
 ```
 
-Replacing the state entirely:
+*Replacing the state entirely:*
 ```javascript
 myDataStore.setState({
   loggedIn: true,
@@ -137,29 +132,23 @@ console.log(myDataStore.state); // { loggedIn: false }
 
 ### Using Actions
 
-To create an Actions instance, call the constructor, and pass in an object containing your action names as keys:
+*Creating a new set of actions:*
 ```javascript
-// actions/my-actions.js
 const { Actions } = require('flux-minimal');
 
-// Add your action names as keys (the value doesn't matter)
+// Add your action names as keys (the values don't matter)
 const myActions = new Actions({
   'doStuff': null,
   'doMoreStuff': null
 });
 
-// Again, export a single instance so other scripts all reference the same instance
-module.exports = myActions;
+// I recommend exporting your Actions instances to share across the app
 ```
-(Note: the reason we pass in an object here instead of an array is to avoid generating a bunch of "hidden classes" when iterating over the actions to create the internal object)
+(Note: the reason we pass in an object here instead of an array is to avoid generating a bunch of "hidden classes" when iterating over the actions to create the internal action objects)
 
 
-Simple (instant) callback:
+*Subscribing to an action:*
 ```javascript
-// app.js
-const myActions require('./actions/my-actions.js');
-
-// Do something when an action happened
 myActions.on('doStuff', () => {
   console.log('yo');
 });
@@ -168,19 +157,14 @@ myActions.on('doStuff', () => {
 myActions.call('doStuff');
 ```
 
-
-Asynchronous actions:
+*Doing stuff inside of an action:*
 ```javascript
-// To make an asynchronous action, use .register. This will register a function to an EXISTING action.
-// The action must have been created already in the constructor.
-const myActions = new Actions({
-  'doStuff': null
-});
- 
+// To do stuff inside of an action use .register()
 myActions.register('doStuff', (done) => {
   doSomeAsyncStuff()
     .then(() => {
-      done();       // call done when all async operations complete to "publish" the action to subscribers
+      done();       // call done() whenever the stuff the action was doing is complete
+                    // there's no distinction between synchronous and asynchronous here, you must always call done()
     });
 });
 
@@ -191,10 +175,9 @@ myActions.on('doStuff', () => {
 myActions.call('doStuff');
 ```
 
-Asynchronous actions that take data:
+*Actions that take data and do stuff with it:*
 ```javascript
-// If we want to do something like call an API, 
-// and need the action to take params or other data, we can do this:
+// If we want to do something like call an API, and we need to take arguments, we can do this:
 myActions.register('callAnApi', (done, args) => {
   console.log(args); // { foo: 'bar' }
   someApiCallThatTakesArguments(args)
@@ -203,16 +186,12 @@ myActions.register('callAnApi', (done, args) => {
     });
 });
 
-// The second argument will be passed into the registered function for this action
-myActions.call('callAnApi', {
-  foo: 'bar'
-});
+myActions.call('callAnApi', { foo: 'bar' });
 ```
 
 
-Asynchronous actions that call back with data:
+*Actions that do stuff and then pass data to their subscribers:*
 ```javascript
-// Send results from the async operation back to the subscribers:
 myActions.register('callAnApi', (done, args) => {
   someApiCallThatTakesArguments(args)
     .then((response) => {
@@ -220,9 +199,8 @@ myActions.register('callAnApi', (done, args) => {
     });
 });
 
-// Now we can subscribe to 'callAnApi' action from anywhere and see the results
 myActions.on('callAnApi', (response) => {
-  console.log(response); // whatever the aPI responded with
+  console.log(response); // the results of the action, whatever that may be
 });
 
 myActions.call('callAnApi', {
@@ -231,23 +209,22 @@ myActions.call('callAnApi', {
 ```
 
 
-Unsubscribing:
+*Unsubscribing:*
 ```javascript
-// Unsubscribing works almost identically for Actions as it does for DataStore:
-const subscriber = myActions.on('someAction', () => {
+// myActions.on returns a ref to the subscriber function, just like DataStore:
+const ref = myActions.on('someAction', () => {
   // ...
 });
 
-myActions.unsubscribe('someAction', subscriber);
+myActions.unsubscribe('someAction', ref);
+
 
 // ------- Alternatively ----------
-
 function callback() {
   // ...
 }
 
 myActions.on('someAction', callback);
-
 myActions.unsubscribe('someAction', callback);
 
 ```
