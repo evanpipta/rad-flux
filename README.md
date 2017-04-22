@@ -303,8 +303,8 @@ Coming later
 
 ## Development
 
-`git clone https://github.com/747823/flux-minimal.git` to get repo
-`npm install` to get developer dependencies
-`npm run build` to build distribution files
-`npm run test` to run unit tests
+- `git clone https://github.com/747823/flux-minimal.git` to get repo
+- `npm install` to get developer dependencies
+- `npm run build` to build distribution files
+- `npm run test` to run unit tests
 
