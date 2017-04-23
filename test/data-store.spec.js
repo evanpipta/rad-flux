@@ -157,6 +157,38 @@ describe('DataStore', () => {
     });
 
 
+    it('setState should replace (not update) arrays', () => {
+      const instance = new DataStore({});
+      expect(() => { 
+        instance.setState({
+          users: [
+            {username: 'joe', meaning: 'coffee'},
+            {username: 'joe2', meaning: 'coffee2'}
+          ],
+        });
+      }).to.not.throw();
+
+      expect(instance.state).to.deep.equal({
+        users: [
+          {username: 'joe', meaning: 'coffee'},
+          {username: 'joe2', meaning: 'coffee2'}
+        ],
+      });
+
+      instance.setState({
+        users: [
+          {username: 'french', meaning: 'from france'}
+        ]
+      });
+
+      expect(instance.state).to.deep.equal({
+        users: [
+          {username: 'french', meaning: 'from france'}
+        ]
+      });
+    });
+
+
     it('replaceState should replace the state', () => {
       const instance = new DataStore({ foo: 1 });
       instance.replaceState({ bar: 0 });

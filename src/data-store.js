@@ -1,4 +1,13 @@
 
+function isObject(obj) {
+  return (
+    obj !== null &&
+    obj instanceof Object &&
+    // Only reliable way to tell if it's REALLY an object:
+    Object.prototype.toString.call(obj) === '[object Object]'
+  );
+}
+
 /**
  * Data store base class
  *
@@ -36,15 +45,16 @@ export default class DataStore {
    *
    */
   setState(newState, stem = this.state) {
-    if (typeof newState !== 'object' || newState === null || newState.constructor !== Object) {
+    if (isObject(newState) === false) {
       throw new TypeError('DataStore.setState: newState must be an object');
     }
 
     for (const key in newState) {
-      if (newState[key] === null || newState[key] === undefined) {
+      const item = newState[key];
+      if (item === null || item === undefined) {
         delete stem[key];
-      } else if (typeof newState[key] === 'object' && typeof stem[key] === 'object') {
-        this.setState(newState[key], stem[key]);
+      } else if (isObject(item) && isObject(stem[key])) {
+        this.setState(item, stem[key]);
       } else {
         stem[key] = newState[key];
       }

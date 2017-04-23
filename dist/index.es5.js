@@ -206,6 +206,12 @@ var Actions = function () {
   return Actions;
 }();
 
+function isObject(obj) {
+  return obj !== null && obj instanceof Object &&
+  // Only reliable way to tell if it's REALLY an object:
+  Object.prototype.toString.call(obj) === '[object Object]';
+}
+
 /**
  * Data store base class
  *
@@ -227,7 +233,6 @@ var Actions = function () {
  * myStore.unsubscribe(callback);
  * 
  */
-
 
 var DataStore = function () {
   function DataStore(initState) {
@@ -252,15 +257,16 @@ var DataStore = function () {
     value: function setState(newState) {
       var stem = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : this.state;
 
-      if ((typeof newState === 'undefined' ? 'undefined' : _typeof(newState)) !== 'object' || newState === null || newState.constructor !== Object) {
+      if (isObject(newState) === false) {
         throw new TypeError('DataStore.setState: newState must be an object');
       }
 
       for (var key in newState) {
-        if (newState[key] === null || newState[key] === undefined) {
+        var item = newState[key];
+        if (item === null || item === undefined) {
           delete stem[key];
-        } else if (_typeof(newState[key]) === 'object' && _typeof(stem[key]) === 'object') {
-          this.setState(newState[key], stem[key]);
+        } else if (isObject(item) && isObject(stem[key])) {
+          this.setState(item, stem[key]);
         } else {
           stem[key] = newState[key];
         }
