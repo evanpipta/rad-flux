@@ -252,7 +252,7 @@ myActions.on('submitTheAwesomeForm', (response) => {
 const { Actions } = require('flux-minimal');
 
 const myActions = module.exports = new Actions({
-  'submitTheAwesomeForm':
+  'submitTheAwesomeForm': null
 });
 
 myActions.register('submitTheAwesomeForm', (done, formData) => {
