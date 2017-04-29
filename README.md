@@ -4,10 +4,6 @@ Minimalist library for flux architecture with no production dependencies
 ### Installation
 `npm install --save flux-minimal`
 
-or
-
-`npm install --save git+https://github.com/747823/flux-minimal.git`
-
 ### Contents:
 - [Concepts](#concepts)
 - [Usage Guide](#usage-guide)
