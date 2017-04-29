@@ -1,6 +1,6 @@
 {
   "name": "flux-minimal",
-  "version": "1.0.2",
+  "version": "1.0.3",
   "description": "Minimalist library for flux architecture with no dependencies",
   "main": "dist/index.js",
   "scripts": {
