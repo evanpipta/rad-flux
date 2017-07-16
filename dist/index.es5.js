@@ -7,14 +7,14 @@ var _createClass = function () { function defineProperties(target, props) { for 
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
 /**
- * 
+ *
  * A class for registering actions that do stuff, calling them, and subscribing to the results
  *
  *
  * ### Usage example:
- * 
- * import { Actions } from 'flux-minimal';
- * 
+ *
+ * import { Actions } from 'rad-flux';
+ *
  * // Create a new actions instance with your initial set of actions
  * let myActions = new Actions({
  *   'doCoolStuff': null,
@@ -27,17 +27,17 @@ function _classCallCheck(instance, Constructor) { if (!(instance instanceof Cons
  *      done(result); // call done to publish the action to subscribers
  *    });
  * });
- * 
+ *
  * // Call the action from anywhere. You can pass in data if a function was registered.
- * myActions.call('doCoolStuff', data); 
- * 
+ * myActions.call('doCoolStuff', data);
+ *
  * // Subscribe to the action from anywhere:
  * myActions.on('doCoolStuff', () => {
  *   console.log('We did some cool stuff');
  * });
  *
  *
- * 
+ *
  * @param {Object} actions - Specify the initial actions for an instance in the constructor
  *                           These can just be null
  */
@@ -60,10 +60,10 @@ var Actions = function () {
 
   /**
    * Register a function to an action
-   * 
-   * This is needed if you want your action to be async (e.g. api calls) 
+   *
+   * This is needed if you want your action to be async (e.g. api calls)
    * Or you don't believe in separating all effects from actions and want to wrap them up in one place
-   * 
+   *
    * @param {String} key    - the action's name
    * @param {Function} func - the action's internal function, what it actually does.
    */
@@ -157,12 +157,12 @@ var Actions = function () {
 
     /**
      * Subscribe to an action with a callback
-     * 
+     *
      * This currently does NOT check for duplicates, and there's no way to unsubscribe
      * So be careful about memory usage from subscribing to actions for now
-     * 
+     *
      * In the future we can add an unsubscribe method
-     * 
+     *
      * @param {String} key          - the action's name
      * @param {Function} callback   - callback to do something when the action is completed
      *
@@ -182,7 +182,7 @@ var Actions = function () {
 
     /**
      * Remove a callback from an action
-     * 
+     *
      * @param {String} key       - the action name
      * @param {String} callback  - a reference to a particular callback function subscribed to the action
      *                             Actions.on() returns a reference to it

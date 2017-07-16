@@ -1,8 +1,8 @@
-# flux-minimal
+# rad-flux
 Minimalist library for flux architecture with no production dependencies
 
 ### Installation
-`npm install --save flux-minimal`
+`npm install --save rad-flux`
 
 ### Contents:
 - [Concepts](#concepts)
@@ -13,15 +13,15 @@ Minimalist library for flux architecture with no production dependencies
 
 ## Concepts
 
-`flux-minimal` takes a few key concepts from flux architecture, Actions and Data Stores, and cuts out everything else. It provides a simple, unopinionated, and non-magical interface to implement a simple form of flux architecture. The goal of `flux-minimal` is to be intuitive, easy, and fast to start using.
+`rad-flux` takes a few key concepts from flux architecture, Actions and Data Stores, and cuts out everything else. It provides a simple, unopinionated, and non-magical interface to implement a simple form of flux architecture. The goal of `rad-flux` is to be intuitive, easy, and fast to start using.
 
-The only pieces of `flux-minimal` are two constructors: `DataStore` and `Actions`.
+The only pieces of `rad-flux` are two constructors: `DataStore` and `Actions`.
 
-A DataStore represents a piece of application state. `flux-minimal` doesn't dictate how these pieces are split up; a `flux-minimal` DataStore can be used to store the entire state of an application, or of a single component. The important thing is that a `flux-minimal` DataStore has a non-destructive `setState()` method that publishes change events to subscribers.
+A DataStore represents a piece of application state. `rad-flux` doesn't dictate how these pieces are split up; a `rad-flux` DataStore can be used to store the entire state of an application, or of a single component. The important thing is that a `rad-flux` DataStore has a non-destructive `setState()` method that publishes change events to subscribers.
 
-An instance of Actions in `flux-minimal` represents one group of actions that can be done within an application. Actions are source agnostic, i.e. can be used for actions initiated by the user, or by the program. `flux-minimal` provides an interface to call actions and subscribe to action calls from anywhere. It supports synchronous and asynchronous actions, and does not dictate whether or not actions should have built-in side effects.
+An instance of Actions in `rad-flux` represents one group of actions that can be done within an application. Actions are source agnostic, i.e. can be used for actions initiated by the user, or by the program. `rad-flux` provides an interface to call actions and subscribe to action calls from anywhere. It supports synchronous and asynchronous actions, and does not dictate whether or not actions should have built-in side effects.
 
-`flux-minimal` has no reducers, dispatchers, or other concepts found in other flux implementations. It really boils down to two simple "flows":
+`rad-flux` has no reducers, dispatchers, or other concepts found in other flux implementations. It really boils down to two simple "flows":
  - You create a store, listen to changes to that store's state from anywhere (and change it from anywhere), and then decide what to do next.
  - You create actions, listen for when they happen from anywhere (and make them happen from anywhere), and then decide what to do next.
 
@@ -35,7 +35,7 @@ Where you go from there is up to you.
 
 **Creating a new DataStore:**
 ```javascript
-const { DataStore } = require('flux-minimal');
+const { DataStore } = require('rad-flux');
 
 const initialState = {};
 
@@ -134,7 +134,7 @@ console.log(myDataStore.state); // { loggedIn: false }
 
 **Creating a new set of actions:**
 ```javascript
-const { Actions } = require('flux-minimal');
+const { Actions } = require('rad-flux');
 
 // Add your action names as keys (the values don't matter)
 const myActions = new Actions({
@@ -238,7 +238,7 @@ myActions.unsubscribe('someAction', callback);
 
 ```javascript
 // data-stores/my-data-store.js
-const { DataStore } = require('flux-minimal');
+const { DataStore } = require('rad-flux');
 const myActions = require('./actions/my-actions');
 
 const myDataStore = module.exports = new DataStore({});
@@ -249,7 +249,7 @@ myActions.on('submitTheAwesomeForm', (response) => {
 ```
 ```javascript
 // actions/my-actions.js
-const { Actions } = require('flux-minimal');
+const { Actions } = require('rad-flux');
 
 const myActions = module.exports = new Actions({
   'submitTheAwesomeForm': null
@@ -292,7 +292,7 @@ Coming later
 
 ## Development
 
-- `git clone https://github.com/747823/flux-minimal.git` to get repo
+- `git clone https://github.com/747823/rad-flux.git` to get repo
 - `npm install` to get developer dependencies
 - `npm run build` to build distribution files
 - `npm run test` to run unit tests
