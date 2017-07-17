@@ -74,18 +74,18 @@ class Actions {
 
 
   /**
-   * Call a user action, pass args and a done function to it
+   * Call a user action, pass data and a done function to it
    */
-  call(key, args) {
+  call(key, data) {
     const action = this.actions[key];
     if (action) {
       if (typeof action.func === 'function') {
         // Function registered for this action, allow it to do the work
         const done = this.buildDoneFunction(key);
-        action.func(done, args);
+        action.func(done, data);
       } else {
-        // No function registered, so just publish immediately with no data
-        this.publish(key);
+        // No function registered, so just publish immediately
+        this.publish(key, data);
       }
     }
   }

@@ -69,6 +69,17 @@ describe('Actions', () => {
       instance.call('myAction');
     });
 
+    it('Should be able to pass data without being async', (done) => {
+      const instance = new Actions({ myAction: null });
+
+      instance.on('myAction', (data) => {
+        expect(data.test).to.equal(true);
+        done();
+      });
+
+      instance.call('myAction', { test: true });
+    });
+
     it('Should allow registering an asynchronous function to an action', (done) => {
       const instance = new Actions({ myAction: null });
 

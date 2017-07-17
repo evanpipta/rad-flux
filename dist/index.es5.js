@@ -86,21 +86,21 @@ var Actions = function () {
     }
 
     /**
-     * Call a user action, pass args and a done function to it
+     * Call a user action, pass data and a done function to it
      */
 
   }, {
     key: 'call',
-    value: function call(key, args) {
+    value: function call(key, data) {
       var action = this.actions[key];
       if (action) {
         if (typeof action.func === 'function') {
           // Function registered for this action, allow it to do the work
           var done = this.buildDoneFunction(key);
-          action.func(done, args);
+          action.func(done, data);
         } else {
-          // No function registered, so just publish immediately with no data
-          this.publish(key);
+          // No function registered, so just publish immediately
+          this.publish(key, data);
         }
       }
     }
