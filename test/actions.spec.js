@@ -69,11 +69,10 @@ describe('Actions', () => {
       instance.call('myAction');
     });
 
-
     it('Should allow registering an asynchronous function to an action', (done) => {
       const instance = new Actions({ myAction: null });
 
-      instance.register('myAction', (callback) => {
+      instance.registerAsync('myAction', (callback) => {
         setTimeout(callback, 50);
       });
 
@@ -93,16 +92,16 @@ describe('Actions', () => {
     it('Should not allow registering to an action that does not exist yet', () => {
       const instance = new Actions({ myAction: null });
       expect(() => {
-        instance.register('NonAction', () => {});
+        instance.registerAsync('NonAction', () => {});
       }).to.throw();
     });
 
 
     it('Should not allow registering a new function to an action that already has a registered function', () => {
       const instance = new Actions({ myAction: null });
-      instance.register('myAction', () => {});
+      instance.registerAsync('myAction', () => {});
       expect(() => {
-        instance.register('myAction', () => {});
+        instance.registerAsync('myAction', () => {});
       }).to.throw();
     });
 
@@ -110,11 +109,11 @@ describe('Actions', () => {
     it('Should allow passing data from the caller into the registered function', (done) => {
       const instance = new Actions({ myAction: null });
 
-      instance.register('myAction', (cb, data) => {
+      instance.registerAsync('myAction', (cb, data) => {
         expect(data).to.deep.equal({ some: 'special data' });
         done();
       });
-      
+
       instance.call('myAction', { some: 'special data' });
     });
 
@@ -122,7 +121,7 @@ describe('Actions', () => {
     it('Should allow passing data from the registered function back to callback', (done) => {
       const instance = new Actions({ myAction: null });
 
-      instance.register('myAction', (cb) => {
+      instance.registerAsync('myAction', (cb) => {
         cb({here: { is: 'the stuff' }});
       });
 
@@ -130,7 +129,7 @@ describe('Actions', () => {
         expect(theStuff).to.deep.equal({here: { is: 'the stuff' }});
         done();
       });
-      
+
       instance.call('myAction');
     });
 

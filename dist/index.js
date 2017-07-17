@@ -13,7 +13,7 @@
  * })
  *
  * // Add side-effects and/or async operations to an action by registering a function:
- * myActions.register('doCoolStuff', (done, data) => {
+ * myActions.registerAsync('doCoolStuff', (done, data) => {
  *   doSomeAsyncStuff(data)
  *    .then((result) => {
  *      done(result); // call done to publish the action to subscribers
@@ -50,7 +50,7 @@ class Actions {
   }
 
   /**
-   * Register a function to an action
+   * Register a function to an action to make it async
    *
    * This is needed if you want your action to be async (e.g. api calls)
    * Or you don't believe in separating all effects from actions and want to wrap them up in one place
@@ -58,11 +58,11 @@ class Actions {
    * @param {String} key    - the action's name
    * @param {Function} func - the action's internal function, what it actually does.
    */
-  register(key, func) {
-    if (typeof key !== 'string') throw new TypeError('Actions.register: key argument must be a string');
-    if (typeof func !== 'function') throw new TypeError('Actions.register: func argument must be a function');
-    if (this.actions[key] === undefined) throw new Error('Actions.register: action not declared, please add it to the constructor');
-    if (this.actions[key].func !== null) throw new Error('Actions.register: action already registered');
+  registerAsync(key, func) {
+    if (typeof key !== 'string') throw new TypeError('Actions.registerAsync: key argument must be a string');
+    if (typeof func !== 'function') throw new TypeError('Actions.registerAsync: func argument must be a function');
+    if (this.actions[key] === undefined) throw new Error('Actions.registerAsync: action not declared, please add it to the constructor');
+    if (this.actions[key].func !== null) throw new Error('Actions.registerAsync: action already registered');
     Object.defineProperty(this.actions, key, {
       writable: false,
       value: {

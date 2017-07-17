@@ -159,8 +159,8 @@ myActions.call('doStuff');
 
 **Doing stuff inside of an action:**
 ```javascript
-// To do stuff inside of an action use .register()
-myActions.register('doStuff', (done) => {
+// To do stuff inside of an action use .registerAsync()
+myActions.registerAsync('doStuff', (done) => {
   doSomeAsyncStuff()
     .then(() => {
       done();       // call done() whenever the stuff the action was doing is complete
@@ -174,7 +174,7 @@ myActions.on('doStuff', () => {
 
 myActions.call('doStuff');
 ```
-Note: you can only call .register() once per action, it permanently sets the registered function for that action.
+Note: you can only call .registerAsync() once per action, it permanently sets the registered function for that action.
 
 The idea here is to make sure actions themselves only do one thing, from one place. If you want your actions to indirectly cause other "effects", subscribe to them externally and do stuff after they complete.
 
@@ -182,7 +182,7 @@ The idea here is to make sure actions themselves only do one thing, from one pla
 **Actions that take data and do stuff with it:**
 ```javascript
 // If we want to do something like call an API, and we need to take arguments, we can do this:
-myActions.register('callAnApi', (done, args) => {
+myActions.registerAsync('callAnApi', (done, args) => {
   console.log(args); // { foo: 'bar' }
   someApiCallThatTakesArguments(args)
     .then(() => {
@@ -196,7 +196,7 @@ myActions.call('callAnApi', { foo: 'bar' });
 
 **Actions that do stuff and then pass data to their subscribers:**
 ```javascript
-myActions.register('callAnApi', (done, args) => {
+myActions.registerAsync('callAnApi', (done, args) => {
   someApiCallThatTakesArguments(args)
     .then((response) => {
       done(response);
@@ -255,7 +255,7 @@ const myActions = module.exports = new Actions({
   'submitTheAwesomeForm': null
 });
 
-myActions.register('submitTheAwesomeForm', (done, formData) => {
+myActions.registerAsync('submitTheAwesomeForm', (done, formData) => {
   callTheApi(formData)
     .then((response) => {
       done(response);
