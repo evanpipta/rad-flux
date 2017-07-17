@@ -21,7 +21,7 @@ function _classCallCheck(instance, Constructor) { if (!(instance instanceof Cons
  * })
  *
  * // Add side-effects and/or async operations to an action by registering a function:
- * myActions.register('doCoolStuff', (done, data) => {
+ * myActions.registerAsync('doCoolStuff', (done, data) => {
  *   doSomeAsyncStuff(data)
  *    .then((result) => {
  *      done(result); // call done to publish the action to subscribers
@@ -59,7 +59,7 @@ var Actions = function () {
   }
 
   /**
-   * Register a function to an action
+   * Register a function to an action to make it async
    *
    * This is needed if you want your action to be async (e.g. api calls)
    * Or you don't believe in separating all effects from actions and want to wrap them up in one place
@@ -70,12 +70,12 @@ var Actions = function () {
 
 
   _createClass(Actions, [{
-    key: 'register',
-    value: function register(key, func) {
-      if (typeof key !== 'string') throw new TypeError('Actions.register: key argument must be a string');
-      if (typeof func !== 'function') throw new TypeError('Actions.register: func argument must be a function');
-      if (this.actions[key] === undefined) throw new Error('Actions.register: action not declared, please add it to the constructor');
-      if (this.actions[key].func !== null) throw new Error('Actions.register: action already registered');
+    key: 'registerAsync',
+    value: function registerAsync(key, func) {
+      if (typeof key !== 'string') throw new TypeError('Actions.registerAsync: key argument must be a string');
+      if (typeof func !== 'function') throw new TypeError('Actions.registerAsync: func argument must be a function');
+      if (this.actions[key] === undefined) throw new Error('Actions.registerAsync: action not declared, please add it to the constructor');
+      if (this.actions[key].func !== null) throw new Error('Actions.registerAsync: action already registered');
       Object.defineProperty(this.actions, key, {
         writable: false,
         value: {
@@ -86,21 +86,21 @@ var Actions = function () {
     }
 
     /**
-     * Call a user action, pass args and a done function to it
+     * Call a user action, pass data and a done function to it
      */
 
   }, {
     key: 'call',
-    value: function call(key, args) {
+    value: function call(key, data) {
       var action = this.actions[key];
       if (action) {
         if (typeof action.func === 'function') {
           // Function registered for this action, allow it to do the work
           var done = this.buildDoneFunction(key);
-          action.func(done, args);
+          action.func(done, data);
         } else {
-          // No function registered, so just publish immediately with no data
-          this.publish(key);
+          // No function registered, so just publish immediately
+          this.publish(key, data);
         }
       }
     }
