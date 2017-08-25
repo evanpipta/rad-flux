@@ -1,12 +1,12 @@
 {
   "name": "rad-flux",
-  "version": "1.2.0",
+  "version": "1.2.1",
   "description": "Minimalist library for flux architecture with no dependencies",
   "repository" : {
     "type" : "git",
     "url": "https://github.com/747823/rad-flux"
   },
-  "main": "dist/index.js",
+  "main": "dist/index.es5.min.js",
   "scripts": {
     "build": "npm run rollup && npm run babel && npm run uglify",
     "rollup": "rollup -o dist/index.js src/index.js",
